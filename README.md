@@ -2,7 +2,7 @@
 
 A virtual trackball controller for 3D rotations with multiple rotation methods.
 
-See this post for many more details and live demonstration widgets: [Virtual Trackballs: A Taxonomy and New Method](https://theshamblog.com/virtual-trackballs-a-taxonomy-and-new-method/)
+See [Virtual Trackballs: A Taxonomy and New Method](https://theshamblog.com/virtual-trackballs-a-taxonomy-and-new-method/) for many more details and live demonstration widgets.
 
 Inspired by https://github.com/rawify/Trackball.js, but with additional options for different virtual trackball methods.
 
