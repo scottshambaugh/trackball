@@ -2,6 +2,8 @@
 
 A virtual trackball controller for 3D rotations with multiple rotation methods.
 
+See this post for many more details and live demonstration widgets: [Virtual Trackballs: A Taxonomy and New Method](https://theshamblog.com/virtual-trackballs-a-taxonomy-and-new-method/)
+
 Inspired by https://github.com/rawify/Trackball.js, but with additional options for different virtual trackball methods.
 
 ## Features
@@ -61,8 +63,6 @@ trackball.reset();
 ```
 
 ## Example with Three.js
-
-### HTML
 ```html
 <!DOCTYPE html>
 <html>
