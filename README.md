@@ -1,12 +1,12 @@
 # Trackball.js
 
-A virtual trackball controller for 3D rotations with multiple rotation methods. Perfect for manipulating 3D objects in web applications.
+A virtual trackball controller for 3D rotations with multiple rotation methods.
+
+Inspired by https://github.com/rawify/Trackball.js, but with additional options for different virtual trackball methods.
 
 ## Features
-- Multiple rotation methods (trackball, arcball, azimuth/elevation)
-- Touch support
+- Multiple rotation control methods
 - Smooth animations
-- Customizable behavior
 - Easy integration with Three.js and other 3D libraries
 
 ## Installation
@@ -62,44 +62,72 @@ trackball.reset();
 
 ## Example with Three.js
 
-```javascript
-import * as THREE from 'three';
+### HTML
+```html
+<!DOCTYPE html>
+<html>
+<head>
+    <title>Trackball.js Demo</title>
+    <style>
+        #container {
+            width: 400px;
+            height: 400px;
+            position: relative;
+            margin: 0 auto;
+        }
+    </style>
+</head>
+<body>
+    <div id="container"></div>
+    
+    <!-- Dependencies -->
+    <script src="https://unpkg.com/quaternion@2.0.1/dist/quaternion.min.js"></script>
+    <script src="https://cdnjs.cloudflare.com/ajax/libs/three.js/r128/three.min.js"></script>
+    <script src="trackball.js"></script>
+    
+    <!-- Demo Code -->
+    <script>
+        const container = document.getElementById('container');
+        const scene = new THREE.Scene();
+        const camera = new THREE.PerspectiveCamera(75, 1, 0.1, 1000);
+        const renderer = new THREE.WebGLRenderer({
+            alpha: true  // Enable transparency
+        });
 
-const container = document.getElementById('container');
-const scene = new THREE.Scene();
-const camera = new THREE.PerspectiveCamera(75, 1, 0.1, 1000);
-const renderer = new THREE.WebGLRenderer();
+        // Setup scene
+        renderer.setSize(400, 400);
+        container.appendChild(renderer.domElement);
+        camera.position.z = 5;
 
-// Setup scene
-renderer.setSize(400, 400);
-container.appendChild(renderer.domElement);
-camera.position.z = 5;
+        // Create object
+        const geometry = new THREE.BoxGeometry();
+        const material = new THREE.MeshNormalMaterial();
+        const cube = new THREE.Mesh(geometry, material);
+        scene.add(cube);
 
-// Create object
-const geometry = new THREE.BoxGeometry();
-const material = new THREE.MeshNormalMaterial();
-const cube = new THREE.Mesh(geometry, material);
-scene.add(cube);
+        // Initialize trackball
+        const trackball = new Trackball({
+            scene: container,
+            rotationMethod: 'azel',
+            onDraw: (quaternion) => {
+                cube.quaternion.set(
+                    quaternion.x,
+                    quaternion.y,
+                    quaternion.z,
+                    quaternion.w
+                );
+            }
+        });
 
-// Initialize trackball
-const trackball = new Trackball({
-    scene: container,
-    onDraw: (quaternion) => {
-        cube.quaternion.set(
-            quaternion.x,
-            quaternion.y,
-            quaternion.z,
-            quaternion.w
-        );
-    }
-});
-
-// Render loop
-function animate() {
-    requestAnimationFrame(animate);
-    renderer.render(scene, camera);
-}
-animate();
+        // Render loop
+        function animate() {
+            requestAnimationFrame(animate);
+            renderer.render(scene, camera);
+        }
+        animate();
+    </script>
+</body>
+</html>
 ```
 
 ## License
