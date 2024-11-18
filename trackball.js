@@ -1,7 +1,9 @@
 /**
  * A virtual trackball controller for 3D rotations, with multiple rotation methods.
- * Requires https://github.com/rawify/Quaternion.js
+ * See this post for more details https://theshamblog.com/virtual-trackballs-a-taxonomy-and-new-method/
+ * Requires: https://github.com/rawify/Quaternion.js
  * Author: @scottshambaugh
+ * Source: https://github.com/scottshambaugh/trackball
  * License: MIT
  */
 class Trackball {
@@ -143,10 +145,8 @@ class Trackball {
       const { clientX, clientY } = this.#lastMousePosition;
 
       const box = this.#drag.box;
-      if (this.#isInBounds(clientX, clientY, box)) {
-        this.#updateRotation(clientX, clientY);
-        this.#draw();
-      }
+      this.#updateRotation(clientX, clientY);
+      this.#draw();
     }
 
     this.#isUpdatePending = false;
