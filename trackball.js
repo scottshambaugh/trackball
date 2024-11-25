@@ -1,9 +1,7 @@
 /**
  * A virtual trackball controller for 3D rotations, with multiple rotation methods.
- * See this post for more details https://theshamblog.com/virtual-trackballs-a-taxonomy-and-new-method/
- * Requires: https://github.com/rawify/Quaternion.js
+ * Requires https://github.com/rawify/Quaternion.js
  * Author: @scottshambaugh
- * Source: https://github.com/scottshambaugh/trackball
  * License: MIT
  */
 class Trackball {
@@ -51,10 +49,26 @@ class Trackball {
       /** @type {number} Size of the trackball relative to container */
       ballsize = 0.75,
       /** @type {Quaternion} Initial rotation quaternion */
-      q = Quaternion.ONE
+      q = Quaternion.ONE,
+      /** @type {boolean} Whether to invert X rotation */
+      invertX = false,
+      /** @type {boolean} Whether to invert Y rotation */
+      invertY = false,
+      /** @type {number} Speed of rotation */
+      speed = 1
     } = opts;
 
-    this.#opts = { scene, rotationMethod, onDraw, clampElevation, border, ballsize };
+    this.#opts = { 
+      scene, 
+      rotationMethod, 
+      onDraw, 
+      clampElevation, 
+      border, 
+      ballsize,
+      invertX,
+      invertY,
+      speed
+    };
 
     // Core state initialization
     this.#q0 = this.#q = q;
@@ -145,8 +159,10 @@ class Trackball {
       const { clientX, clientY } = this.#lastMousePosition;
 
       const box = this.#drag.box;
-      this.#updateRotation(clientX, clientY);
-      this.#draw();
+      if (this.#isInBounds(clientX, clientY, box)) {
+        this.#updateRotation(clientX, clientY);
+        this.#draw();
+      }
     }
 
     this.#isUpdatePending = false;
@@ -170,9 +186,12 @@ class Trackball {
 
   #updateTrackball(deltaX, deltaY, clientX, clientY) {
     const minDim = Math.min(this.#drag.box.height, this.#drag.box.width);
-    const k = [deltaY / minDim, deltaX / minDim, 0];
+    const invertedDeltaX = this.#opts.invertX ? -deltaX : deltaX;
+    const invertedDeltaY = this.#opts.invertY ? -deltaY : deltaY;
+    
+    const k = [invertedDeltaY / minDim, invertedDeltaX / minDim, 0];
     const norm = Math.sqrt(k[0] * k[0] + k[1] * k[1] + k[2] * k[2]);
-    const theta = norm * Math.PI / 2;
+    const theta = norm * Math.PI / 2 * this.#opts.speed;
 
     const cosTheta = Math.cos(theta);
     const sinThetaNormalized = Math.sin(theta) / norm;
@@ -250,14 +269,17 @@ class Trackball {
     const scaleX = Math.PI / (Math.min(this.#drag.box.width, this.#drag.box.height));
     const scaleY = scaleX;
 
-    this.#azimuth = this.#azimuth_start + deltaX * scaleX;
+    const invertedDeltaX = this.#opts.invertX ? -deltaX : deltaX;
+    const invertedDeltaY = this.#opts.invertY ? -deltaY : deltaY;
+
+    this.#azimuth = this.#azimuth_start + invertedDeltaX * scaleX * this.#opts.speed;
 
     if (this.#opts.clampElevation) {
       this.#elevation = Math.max(-Math.PI / 2 + 0.01,
         Math.min(Math.PI / 2 - 0.01,
-          this.#elevation_start + deltaY * scaleY));
+          this.#elevation_start + invertedDeltaY * scaleY * this.#opts.speed));
     } else {
-      this.#elevation = this.#elevation_start + deltaY * scaleY;
+      this.#elevation = this.#elevation_start + invertedDeltaY * scaleY * this.#opts.speed;
     }
 
     this.#q = Quaternion.fromEuler(this.#elevation, this.#azimuth, 0, 'XYZ');
