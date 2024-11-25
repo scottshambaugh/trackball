@@ -6,6 +6,8 @@ See [Virtual Trackballs: A Taxonomy and New Method](https://theshamblog.com/virt
 
 Inspired by https://github.com/rawify/Trackball.js, but with additional options for different virtual trackball methods.
 
+Javascript minified using [minify](https://github.com/tdewolff/minify/tree/master).
+
 ## Features
 - Multiple rotation control methods
 - Smooth animations
@@ -15,7 +17,7 @@ Inspired by https://github.com/rawify/Trackball.js, but with additional options 
 
 ```html
 <script src="https://raw.githubusercontent.com/rawify/Quaternion.js/master/quaternion.min.js"></script>
-<script src="trackball.js"></script>
+<script src="trackball.min.js"></script>
 ```
 
 ## Quick Start
