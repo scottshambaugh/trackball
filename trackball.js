@@ -10,8 +10,10 @@ class Trackball {
   #q;
   #azimuth;
   #elevation;
+  #roll;
   #azimuth_start = 0;
   #elevation_start = 0;
+  #roll_start = 0;
   #drag = null;
   #isUpdatePending = false;
   #lastMousePosition = null;
@@ -88,6 +90,16 @@ class Trackball {
   rotate(quaternion) {
     if (!this.#drag) {
       this.#q = this.#q0 = this.#q0.mul(quaternion);
+      
+      // Calculate azimuth and elevation from the new quaternion
+      const euler = this.#q.toEuler('XYZ');  // [yaw, pitch, roll]
+      this.#elevation = euler[0];
+      this.#azimuth = euler[1];
+      this.#roll = euler[2];
+      this.#azimuth_start = this.#azimuth;
+      this.#elevation_start = this.#elevation;
+      this.#roll_start = this.#roll;
+      
       this.#draw();
     }
   }
@@ -100,6 +112,7 @@ class Trackball {
     this.#q = this.#q0 = new Quaternion(1, 0, 0, 0);
     this.#azimuth = this.#azimuth_start = 0;
     this.#elevation = this.#elevation_start = 0;
+    this.#roll = this.#roll_start = 0;
     this.#draw();
   }
 
@@ -240,6 +253,7 @@ class Trackball {
     this.#lastMousePosition = null;
     this.#azimuth_start = this.#azimuth;
     this.#elevation_start = this.#elevation;
+    this.#roll_start = this.#roll;
     this.#draw();
   }
 
@@ -291,7 +305,7 @@ class Trackball {
       this.#elevation = this.#elevation_start + invertedDeltaY * scaleY * this.#opts.speed;
     }
 
-    this.#q = Quaternion.fromEuler(this.#elevation, this.#azimuth, 0, 'XYZ');
+    this.#q = Quaternion.fromEuler(this.#elevation, this.#azimuth, this.#roll, 'XYZ');
   }
 
   #isInBounds(x, y, box) {
