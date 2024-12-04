@@ -37,11 +37,16 @@ const trackball = new Trackball({
 ```javascript
 {
     scene: HTMLElement,          // Container element
-    rotationMethod: 'trackball', // Rotation method
-    ballsize: 0.75,             // Size relative to container
-    clampElevation: false,      // Restrict vertical rotation
-    border: 0,                  // Border size
-    onDraw: (quaternion) => {}  // Rotation callback
+    rotationMethod: string,      // Rotation method
+    onDraw: (quaternion) => {},  // Rotation callback
+
+    ballsize: 0.75,              // Size relative to container
+    clampElevation: false,       // Restrict vertical rotation
+    border: 0,                   // Border size
+    q: Quaternion.ONE            // Initial quaternion
+    invertX: false,              // Whether to invert X rotation
+    invertY: false,              // Whether to invert Y rotation
+    speed: 1                     // Speed of rotation
 }
 ```
 
