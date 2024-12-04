@@ -142,3 +142,4 @@ MIT
 
 ## Dependencies
 - [Quaternion.js](https://github.com/rawify/Quaternion.js)
+- [Three.js](https://github.com/mrdoob/three.js/)
