@@ -210,7 +210,16 @@ class Trackball {
   }
 
   #updateSphericalMethods(clientX, clientY) {
-    const currentVector = this.#project(clientX, clientY, this.#drag.box);
+    // Get the current vector, applying inversions
+    const box = this.#drag.box;
+    const invertedX = this.#opts.invertX ? 
+      2 * this.#drag.startPosition[0] - clientX : 
+      clientX;
+    const invertedY = this.#opts.invertY ? 
+      2 * this.#drag.startPosition[1] - clientY : 
+      clientY;
+    
+    const currentVector = this.#project(invertedX, invertedY, box);
     const dq = Quaternion.fromVectors(this.#drag.startVector, currentVector);
 
     if (this.#opts.rotationMethod === 'sphere') {
